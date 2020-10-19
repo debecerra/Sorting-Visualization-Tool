@@ -14,8 +14,8 @@ html, body {
 
 .display-area {
   display: flex;
-  /* justify-content: center; */
-  justify-content: space-evenly;
+  justify-content: center;
+  /* justify-content: space-evenly; */
   align-items: flex-end;
   height: 70vh;
   border-bottom: 2px outset black;
@@ -29,5 +29,5 @@ html, body {
   border: 1px solid black;
   height: 100px;
   width: 20px;
-  margin: 5px;
+  margin: 2px;
 }
