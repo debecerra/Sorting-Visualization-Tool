@@ -73,14 +73,29 @@ function List(length) {
   };
 }
 
-/*
-  refreshActiveList
- */
-
+// refreshActiveList
 function refreshActiveList(size) {
+  // Clear the UI of current list
+  $(".display-area").empty();
+
+  // Clear the current list and create a new one
   list = new List(size);
   ListElem.prototype.maxValue = size;
   list.init();
 }
 
 refreshActiveList(DEFAULT_SIZE);
+
+// Event Handlers
+$("#reset-btn").on("click", function(){
+  size = list.length;
+  refreshActiveList(size);
+});
+
+$("#elem-num-input").on("input", function(){
+  console.log($("#elem-num-input").val());
+  num = $("#elem-num-input").val();
+  num = num < 5 ? 5 : num;
+  num = num > 100 ? 100 : num;
+  refreshActiveList(num);
+});
