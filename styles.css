@@ -31,3 +31,7 @@ html, body {
   width: 20px;
   margin: 2px;
 }
+
+.array-element.swapping {
+  background-color: #01c5c4;
+}
