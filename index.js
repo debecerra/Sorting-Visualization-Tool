@@ -4,12 +4,13 @@
  Global variables
  ***************/
 const DEFAULT_ARRAY_SIZE = 15;
-const DELAY = 50;
+const DELAY = 100;
 
 const VALID_STATES = new Set();
 VALID_STATES.add("swapping");
 VALID_STATES.add("active");
 VALID_STATES.add("inactive");
+VALID_STATES.add("done");
 
 let sortingArray = null;
 let sort = bubbleSort;
@@ -128,6 +129,15 @@ class CustomArray {
     }
 
     /**
+     * Sets the state of all array elements to inactive
+     */
+    resetItemStates() {
+        for (var i = 0; i < this.length; i++) {
+            this.elements[i].setState("inactive");
+        }
+    }
+
+    /**
      * Gets the item at a given index of the CustomArray.
      * @param {Number} index - The index of the CustomArray to be accessed.
      */
@@ -154,15 +164,19 @@ $("#sort-btn-group input").on("click", function() {
             console.log("Bubble Sort has been selected");
             break;
         case "insertsort-btn":
+            sort = insertionSort;
             console.log("Insertion Sort has been selected");
             break;
         case "mergesort-btn":
+            sort = mergeSort;
             console.log("Merge Sort has been selected");
             break;
         case "heapsort-btn":
+            sort = heapSort;
             console.log("Heap Sort has been selected");
             break;
         case "quicksort-btn":
+            sort = quickSort;
             console.log("Quick Sort has been selected");
             break;
         default:
@@ -287,15 +301,60 @@ async function swap(i, j) {
  */
 async function bubbleSort() {
     n = sortingArray.length;
-
     for (var i = n - 1; i >= 0; i--) {
         for (var j = 0; j < i; j++) {
             if (sortingArray.getItem(j).getValue() > sortingArray.getItem(j + 1).getValue()) {
+                // Bubble the larger element up
+                await swap(j, j + 1);
+            }
+        }
+        sortingArray.getItem(i).setState("done");
+    }
+
+    await sleep(2000);
+    sortingArray.resetItemStates();
+}
+
+/**
+ * Performs the Insertion Sort algorithm on sortingArray.
+ */
+async function insertionSort() {
+    n = sortingArray.length;
+    for (var i = 0; i < n; i++){
+        sortingArray.getItem(i).setState("done");
+        for (var j = i - 1; j >= 0; j--){
+            if (sortingArray.getItem(j).getValue() > sortingArray.getItem(j + 1).getValue()){
+                // Shift element at j to the right and shift element at i to the left
                 await swap(j, j + 1);
             }
         }
     }
+
+    await sleep(2000);
+    sortingArray.resetItemStates();
 }
+
+/**
+ * Performs the Merge Sort algorithm on sortingArray.
+ */
+async function mergeSort() {
+    throw {name : "NotImplementedError", message : "too lazy to implement"};
+}
+
+/**
+ * Performs the Heap Sort algorithm on sortingArray.
+ */
+async function heapSort() {
+    throw {name : "NotImplementedError", message : "too lazy to implement"};
+}
+
+/**
+ * Performs the Quick Sort algorithm on sortingArray.
+ */
+async function quickSort() {
+    throw {name : "NotImplementedError", message : "too lazy to implement"};
+}
+
 
 /**
  * Validates an index to be used to access an element of the sorting array.
@@ -333,17 +392,55 @@ function _swap(i, j) {
  */
 function _bubbleSort() {
     n = sortingArray.length;
-
     for (var i = n - 1; i >= 0; i--) {
         for (var j = 0; j < i; j++) {
             if (sortingArray.getItem(j).getValue() > sortingArray.getItem(j + 1).getValue()) {
+                // Bubble the larger element up
                 _swap(j, j + 1);
             }
         }
     }
 }
 
-// 2 4 1 8 0
+/**
+ * Performs the Insertion Sort algorithm on sortingArray. This is a hidden
+ * function that executes the sorting algorithm without animations.
+ */
+function _insertionSort() {
+    n = sortingArray.length;
+    for (var i = 0; i < n; i++){
+        for (var j = i - 1; j >= 0; j--){
+            if (sortingArray.getItem(j).getValue() > sortingArray.getItem(j + 1).getValue()){
+                // Shift element at j to the right and shift element at i to the left
+                _swap(j, j + 1);
+            }
+        }
+    }
+}
+
+/**
+ * Performs the Merge Sort algorithm on sortingArray. This is a hidden
+ * function that executes the sorting algorithm without animations.
+ */
+function _mergeSort() {
+    throw {name : "NotImplementedError", message : "too lazy to implement"};
+}
+
+/**
+ * Performs the Heap Sort algorithm on sortingArray. This is a hidden
+ * function that executes the sorting algorithm without animations.
+ */
+function _heapSort() {
+    throw {name : "NotImplementedError", message : "too lazy to implement"};
+}
+
+/**
+ * Performs the Quick Sort algorithm on sortingArray. This is a hidden
+ * function that executes the sorting algorithm without animations.
+ */
+function _quickSort() {
+    throw {name : "NotImplementedError", message : "too lazy to implement"};
+}
 
 /**
  * TEMP functions

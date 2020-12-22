@@ -3,9 +3,10 @@
   #b8de6f
   #f1e189
   #f39233
+  #ecf4f3
 */
 html, body {
-  background: #ecf4f3;
+  background: #272727;
 }
 
 .btn-toolbar {
@@ -25,13 +26,17 @@ html, body {
 
 .array-element {
   display: flex;
-  background-color: #f39233;
+  background-color: #FFE400;  /* yellow */
   border: 1px solid black;
   height: 100px;
   width: 20px;
   margin: 2px;
 }
 
+.array-element.done {
+  background-color: #14A76C;  /* green */
+}
+
 .array-element.swapping {
-  background-color: #01c5c4;
+  background-color: #FF652F;  /* orange-red */
 }
