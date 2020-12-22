@@ -4,7 +4,7 @@
  Global variables
  ***************/
 const DEFAULT_ARRAY_SIZE = 15;
-const DELAY = 1000;
+const DELAY = 50;
 
 const VALID_STATES = new Set();
 VALID_STATES.add("swapping");
@@ -12,8 +12,7 @@ VALID_STATES.add("active");
 VALID_STATES.add("inactive");
 
 let sortingArray = null;
-
-
+let sort = bubbleSort;
 
 /** Class representing an item in a CustomArray */
 class arrayItem {
@@ -145,23 +144,41 @@ class CustomArray {
 // TODO
 
 /**
- * Sets event handler for click on reset-btn. The active array is reset to a
- * new array of the same length.
+ * Sets event handler for click on bubble-sort-btn. The active sorting
+ * algorithm is set to the user selection.
  */
-$("#reset-btn").on("click", function() {
-    size = sortingArray.length;
-    refreshActiveCustomArray(size);
+$("#sort-btn-group input").on("click", function() {
+    switch ($(this).attr("id")) {
+        case "bubblesort-btn":
+            sort = bubbleSort;
+            console.log("Bubble Sort has been selected");
+            break;
+        case "insertsort-btn":
+            console.log("Insertion Sort has been selected");
+            break;
+        case "mergesort-btn":
+            console.log("Merge Sort has been selected");
+            break;
+        case "heapsort-btn":
+            console.log("Heap Sort has been selected");
+            break;
+        case "quicksort-btn":
+            console.log("Quick Sort has been selected");
+            break;
+        default:
+            console.log("Error: Unknown input");
+    }
 });
 
 /**
- * Sets event handler for click on elem-num-input. The active array is reset to a
- * new array of the size given by the elem-num-input field.
- */
- $("#elem-num-input").on("input", function() {
+* Sets event handler for click on elem-num-input. The active array is reset to a
+* new array of the size given by the elem-num-input field.
+*/
+$("#elem-num-input").on("input", function() {
     // Get the value of the input tag
     num = $("#elem-num-input").val();
 
-    // Assert 5 <= num <= 100
+    // Bound the array length to 5 <= num <= 100
     num = num < 5 ? 5 : num;
     num = num > 100 ? 100 : num;
 
@@ -169,17 +186,38 @@ $("#reset-btn").on("click", function() {
     refreshActiveArray(num);
 });
 
+/**
+ * Sets event handler for click on sort-btn. The active array is sorted using
+ * the active sorting algorithm.
+ */
+$("#sort-btn").on("click", function() {
+    console.log("The array is being sorted...");
+    sort();
+    console.log("The array has been sorted.");
+});
+
+/**
+ * Sets event handler for click on reset-btn. The active array is reset to a
+ * new array of the same length.
+ */
+$("#reset-btn").on("click", function() {
+    size = sortingArray.length;
+    refreshActiveArray(size);
+    console.log("The array has been reset.");
+});
+
+
 
 
 /*****************
  Utility Functions
  *****************/
 
- /**
-  * Removes the active array from the display and creates a new active array.
-  * @param  {Number}  size The size of the new active array.
-  */
-  function refreshActiveArray(size) {
+/**
+ * Removes the active array from the display and creates a new active array.
+ * @param  {Number}  size The size of the new active array.
+ */
+function refreshActiveArray(size) {
     // Clear the UI of current CustomArray
     $(".display-area").empty();
 
@@ -216,12 +254,12 @@ async function demo() {
  * Sorting Algorithms
  ********************/
 
- /**
-  * Swaps the i element and j-th element of sortingArray.
-  * @param  {Number} i   The index of the first element to swap.
-  * @param  {Number} j   The index of the second element to swap
-  */
-  async function swap(i, j) {
+/**
+ * Swaps the i element and j-th element of sortingArray.
+ * @param  {Number} i   The index of the first element to swap.
+ * @param  {Number} j   The index of the second element to swap
+ */
+async function swap(i, j) {
     // Input validation
     if (!validIndex(i) || !validIndex(j) || i == j) {
         throw "Error: invalid input";
@@ -235,13 +273,37 @@ async function demo() {
     elemA.setValue(elemB.getValue());
     elemB.setValue(temp);
 
-    elemA.elem.addClass("update");
-    elemB.elem.addClass("update");
+    elemA.elem.addClass("swapping");
+    elemB.elem.addClass("swapping");
 
     // Wait, then change UI state back to normal
-    await sleep(TICK_DELAY);
-    elemA.elem.removeClass("update");
-    elemB.elem.removeClass("update");
+    await sleep(DELAY);
+    elemA.elem.removeClass("swapping");
+    elemB.elem.removeClass("swapping");
+}
+
+/**
+ * Performs the Bubble Sort algorithm on sortingArray.
+ */
+async function bubbleSort() {
+    n = sortingArray.length;
+
+    for (var i = n - 1; i >= 0; i--) {
+        for (var j = 0; j < i; j++) {
+            if (sortingArray.getItem(j).getValue() > sortingArray.getItem(j + 1).getValue()) {
+                await swap(j, j + 1);
+            }
+        }
+    }
+}
+
+/**
+ * Validates an index to be used to access an element of the sorting array.
+ * @param  {Number} index The index number to be validates
+ * @return {Boolean}      True if the index is valid, false otherwise
+ */
+function validIndex(index) {
+    return Number.isInteger(index) && index >= 0 && index < sortingArray.length;
 }
 
 /**
@@ -266,30 +328,26 @@ function _swap(i, j) {
 }
 
 /**
- * Validates an index to be used to access an element of the sorting array.
- * @param  {Number} index The index number to be validates
- * @return {Boolean}      True if the index is valid, false otherwise
- */
-function validIndex(index) {
-    return Number.isInteger(index) && index >= 0 && index < sortingArray.length;
-}
-
-/**
  * Performs the Bubble Sort algorithm on sortingArray. This is a hidden
  * function that executes the sorting algorithm without animations.
  */
 function _bubbleSort() {
     n = sortingArray.length;
 
-    for (var i = 0; i < n; i++) {
-        for (var j = 0; j < n - i - 1; j++) {
-            if (sortingArray.elements[j].getValue() > sortingArray.elements[j + 1].getValue()) {
+    for (var i = n - 1; i >= 0; i--) {
+        for (var j = 0; j < i; j++) {
+            if (sortingArray.getItem(j).getValue() > sortingArray.getItem(j + 1).getValue()) {
                 _swap(j, j + 1);
             }
         }
     }
 }
 
+// 2 4 1 8 0
+
+/**
+ * TEMP functions
+ */
 async function foo(i) {
     if (i == 1) {
         console.log("i =", i);
