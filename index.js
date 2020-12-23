@@ -5,6 +5,7 @@
  ***************/
 const DEFAULT_ARRAY_SIZE = 15;
 const DELAY = 100;
+const END_DELAY = 1000;
 
 const VALID_STATES = new Set();
 VALID_STATES.add("swapping");
@@ -297,6 +298,29 @@ async function swap(i, j) {
 }
 
 /**
+ * Sets the i-th element of sortingArray to a given value
+ * @param  {Number} i   The index of the element to set.
+ * @param  {Number} val The value to set the element to.
+ */
+async function set(i, val) {
+    // Input validation
+    if (!validIndex(i)) {
+        throw "Error: invalid input";
+    }
+
+    const elemA = sortingArray.getItem(i);
+
+    // Set the new value
+    elemA.setValue(val);
+
+    elemA.elem.addClass("swapping");
+
+    // Wait, then change UI state back to normal
+    await sleep(DELAY);
+    elemA.elem.removeClass("swapping");
+}
+
+/**
  * Performs the Bubble Sort algorithm on sortingArray.
  */
 async function bubbleSort() {
@@ -311,7 +335,7 @@ async function bubbleSort() {
         sortingArray.getItem(i).setState("done");
     }
 
-    await sleep(2000);
+    await sleep(END_DELAY);
     sortingArray.resetItemStates();
 }
 
@@ -330,7 +354,7 @@ async function insertionSort() {
         }
     }
 
-    await sleep(2000);
+    await sleep(END_DELAY);
     sortingArray.resetItemStates();
 }
 
@@ -338,7 +362,74 @@ async function insertionSort() {
  * Performs the Merge Sort algorithm on sortingArray.
  */
 async function mergeSort() {
-    throw {name : "NotImplementedError", message : "too lazy to implement"};
+    // Call the recursive helper function
+    await mergeSortHelper(sortingArray, 0, sortingArray.length - 1);
+
+    // Change the color of all array elements to "done"
+    for (var i = 0; i < sortingArray.length; i ++) {
+        sortingArray.getItem(i).setState("done");
+    }
+
+    // Wait, then change the color back to normal
+    await sleep(END_DELAY);
+    sortingArray.resetItemStates();
+}
+
+/**
+ * Performs the recursive calls of the Merge Sort algorithm on sortingArray.
+ */
+async function mergeSortHelper(arr, l, r) {
+    // Base case is when arr is of length 1 (or 0)
+    if (l >= r) {
+        return;
+    }
+
+    let mid = Math.floor((l + r) / 2);
+
+    // Sort the subarray arr[l, ..., mid]
+    await mergeSortHelper(arr, l, mid);
+
+    // Sort the subarray arr[mid + 1, ..., r]
+    await mergeSortHelper(arr, mid + 1, r);
+
+    // Merge the sorted subarray's
+    await merge(arr, l, mid, r);
+    return;
+}
+
+/**
+ * Performs the merging subprocedure of the Merge Sort algorithm on sortingArray.
+ * This is a hidden function that executes the sorting algorithm without animations.
+ */
+async function merge(arr, l, m, r) {
+    // Get sizes of two subarray's to be merged
+    let n1 = m - l + 1;
+    let n2 = r - m;
+
+    // Copy into temp array's
+    tempA = [];
+    tempB = [];
+    for (let i = 0; i < n1; i++) {
+        tempA.push(arr.getItem(l + i).getValue());
+    }
+    for (let j = 0; j < n2; j++) {
+        tempB.push(arr.getItem(m + 1 + j).getValue());
+    }
+
+    // Merge into original array
+    let i = 0;
+    let j = 0;
+    let k = l;
+    while (k <= r) {
+        if (i < n1 && (j >= n2 || tempA[i] < tempB[j])) {
+            await set(k, tempA[i]);  // Set value
+            i++;
+        } else {
+            await set(k, tempB[j]);  // Set Value
+            j++;
+        }
+        k++;
+    }
 }
 
 /**
@@ -387,6 +478,24 @@ function _swap(i, j) {
 }
 
 /**
+ * Sets the i-th element of sortingArray to a given value
+ * This is a hidden function that performs the set without animatons.
+ * @param  {Number} i   The index of the element to set.
+ * @param  {Number} val The value to set the element to.
+ */
+function _set(i, val) {
+    // Input validation
+    if (!validIndex(i)) {
+        throw "Error: invalid input";
+    }
+
+    const elemA = sortingArray.getItem(i);
+
+    // Set the new value
+    elemA.setValue(val);
+}
+
+/**
  * Performs the Bubble Sort algorithm on sortingArray. This is a hidden
  * function that executes the sorting algorithm without animations.
  */
@@ -423,7 +532,65 @@ function _insertionSort() {
  * function that executes the sorting algorithm without animations.
  */
 function _mergeSort() {
-    throw {name : "NotImplementedError", message : "too lazy to implement"};
+    _mergeSortHelper(sortingArray, 0, sortingArray.length - 1);
+}
+
+/**
+ * Performs the recursive calls of the Merge Sort algorithm on sortingArray.
+ * This is a hidden function that executes the sorting algorithm without animations.
+ */
+function _mergeSortHelper(arr, l, r) {
+    // Base case is when arr is of length 1 (or 0)
+    if (l >= r) {
+        return;
+    }
+
+    let mid = Math.floor((l + r) / 2);
+
+    // Sort the subarray arr[l, ..., mid]
+    _mergeSortHelper(arr, l, mid);
+
+    // Sort the subarray arr[mid + 1, ..., r]
+    _mergeSortHelper(arr, mid + 1, r);
+
+    // Merge the sorted subarray's
+    _merge(arr, l, mid, r);
+    return;
+}
+
+/**
+ * Performs the merging subprocedure of the Merge Sort algorithm on sortingArray.
+ * This is a hidden function that executes the sorting algorithm without animations.
+ */
+function _merge(arr, l, m, r) {
+    // Get sizes of two subarray's to be merged
+    let n1 = m - l + 1;
+    let n2 = r - m;
+
+    // Copy into temp array's
+    tempA = [];
+    tempB = [];
+    for (let i = 0; i < n1; i++) {
+        tempA.push(arr.getItem(l + i).getValue());
+    }
+    for (let j = 0; j < n2; j++) {
+        tempB.push(arr.getItem(m + 1 + j).getValue());
+    }
+
+    // Merge into original array
+    let i = 0;
+    let j = 0;
+    let k = l;
+    while (k <= r) {
+        if (i < n1 && (j >= n2 || tempA[i] < tempB[j])) {
+            _set(k, tempA[i]);  // Set value
+            i++;
+        } else {
+            _set(k, tempB[j]);  // Set Value
+            j++;
+        }
+        k++;
+    }
 }
 
 /**
