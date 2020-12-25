@@ -3,7 +3,7 @@
 /***************
  Global variables
  ***************/
-const DEFAULT_ARRAY_SIZE = 15;
+const DEFAULT_ARRAY_SIZE = 20;
 const DELAY = 100;
 const END_DELAY = 1000;
 
@@ -17,21 +17,21 @@ let sortingArray = null;
 let sort = bubbleSort;
 
 /** Class representing an item in a CustomArray */
-class arrayItem {
+class ArrayItem {
     /**
-     * Creates an arrayItem.
+     * Creates an ArrayItem.
      * @param {Number} x - The scalar value of the array element.
      */
     constructor(value) {
-        // Throw an error if this.maxValue is not defined before arrayItem object is initialized
+        // Throw an error if this.maxValue is not defined before ArrayItem object is initialized
         if (this.maxValue == null) {
-            throw "Error: max value not set before creating arrayItem object";
+            throw "Error: max value not set before creating ArrayItem object";
         }
 
         this.value = value;
         this.state = "inactive";
         this.maxHeight = 0.8 * $(".display-area").height();
-        this.width = (this.maxValue <= 16 ? 40 : 15);
+        this.width = (this.maxValue <= 20 ? 40 : 15);
         this.height = this.maxHeight * (this.value / this.maxValue);
         this.elem = $("<div>")
             .addClass("array-element")
@@ -40,7 +40,7 @@ class arrayItem {
     }
 
     /**
-     * Takes the HTML element that corresponds to the arrayItem and appends
+     * Takes the HTML element that corresponds to the ArrayItem and appends
      * to the webpage.
      */
     initUI() {
@@ -48,16 +48,16 @@ class arrayItem {
     }
 
     /**
-     * Gets the value of the arrayItem.
-     * @return {Number} The value of the arrayItem
+     * Gets the value of the ArrayItem.
+     * @return {Number} The value of the ArrayItem
      */
     getValue() {
         return this.value;
     }
 
     /**
-     * Sets the arrayItem value.
-     * @param {Number} newValue - The new arrayItem value
+     * Sets the ArrayItem value.
+     * @param {Number} newValue - The new ArrayItem value
      */
     setValue(newValue) {
         // Update the object properties
@@ -69,8 +69,8 @@ class arrayItem {
     }
 
     /**
-     * Sets the arrayItem state.
-     * @param {String} newState - The new arrayItem state
+     * Sets the ArrayItem state.
+     * @param {String} newState - The new ArrayItem state
      */
     setState(newState) {
         if (!VALID_STATES.has(newState)) {
@@ -98,17 +98,17 @@ class CustomArray {
      * Initializes the CustomArray with randomly shuffled integer values
      */
     init() {
-        // Create the CustomArray of arrayItem objects
+        // Create the CustomArray of ArrayItem objects
         for (var i = 1; i <= this.length; i++) {
-            this.elements.push(new arrayItem(i));
+            this.elements.push(new ArrayItem(i));
         }
 
         // Shuffle the elements into a random order
         this.shuffle();
 
         // Draw the CustomArray to the display area
-        this.elements.forEach(function(arrayItem) {
-            arrayItem.initUI();
+        this.elements.forEach(function(ArrayItem) {
+            ArrayItem.initUI();
         });
 
         // Update the minimum height of the display areas
@@ -150,9 +150,6 @@ class CustomArray {
 /*****************
  Event Handlers
  *****************/
-
-// Handle click on Sort button
-// TODO
 
 /**
  * Sets event handler for click on bubble-sort-btn. The active sorting
@@ -238,7 +235,7 @@ function refreshActiveArray(size) {
 
     // Clear the current CustomArray and create a new one
     sortingArray = new CustomArray(size);
-    arrayItem.prototype.maxValue = size;
+    ArrayItem.prototype.maxValue = size;
     sortingArray.init();
 }
 
@@ -283,7 +280,7 @@ async function swap(i, j) {
     const elemA = sortingArray.getItem(i);
     const elemB = sortingArray.getItem(j);
 
-    // Swap the values of the arrayItems
+    // Swap the values of the ArrayItems
     let temp = elemA.getValue();
     elemA.setValue(elemB.getValue());
     elemB.setValue(temp);
@@ -399,7 +396,6 @@ async function mergeSortHelper(arr, l, r) {
 
 /**
  * Performs the merging subprocedure of the Merge Sort algorithm on sortingArray.
- * This is a hidden function that executes the sorting algorithm without animations.
  */
 async function merge(arr, l, m, r) {
     // Get sizes of two subarray's to be merged
@@ -436,9 +432,59 @@ async function merge(arr, l, m, r) {
  * Performs the Heap Sort algorithm on sortingArray.
  */
 async function heapSort() {
-    throw {name : "NotImplementedError", message : "too lazy to implement"};
+    // Build a max heap
+    await buildMaxHeap(sortingArray);
+
+    // Extract max element and add to sorted array
+    for (let i = sortingArray.length - 1; i > 0; i--) {
+        await swap(0, i);
+        await heapify(sortingArray, i, 0);
+        sortingArray.getItem(i).setState("done");   // Set state to done
+    }
+    sortingArray.getItem(0).setState("done");  // Set state to done
+
+    // Reset state to default
+    await sleep(END_DELAY);
+    sortingArray.resetItemStates();
 }
 
+/**
+ * Restores the max heap property for an element of a max heap.
+ * @param  {Array}  arr  The CustomArray which represents the heap.
+ * @param  {Number} n    The size of the heap.
+ * @param  {Number} i    The index of the element of the array to heapify.
+ */
+async function heapify(arr, n, i) {
+    let lc = 2*i + 1;        // Left subchild
+    let rc = 2*i + 2;        // Right subchild
+    let largest = i;
+
+    // Find largest between root, lc, rc
+    if (lc < n && arr.getItem(lc).getValue() > arr.getItem(largest).getValue()) {
+        largest = lc;
+    }
+    if (rc < n && arr.getItem(rc).getValue() > arr.getItem(largest).getValue()) {
+        largest = rc;
+    }
+
+    // Restore heap property
+    if (largest != i) {
+        await swap(largest, i);
+        await heapify(arr, n, largest);
+    }
+
+}
+
+/**
+ * Builds a max heap from an array.
+ * @param  {Array}  arr  The CustomArray of ArrayItems which represents the heap.
+ */
+async function buildMaxHeap(arr) {
+    let n = arr.length;
+    for (let i = Math.floor(n/2); i >= 0; i--) {
+        await heapify(arr, n, i);
+    }
+}
 /**
  * Performs the Quick Sort algorithm on sortingArray.
  */
@@ -471,7 +517,7 @@ function _swap(i, j) {
     const elemA = sortingArray.getItem(i);
     const elemB = sortingArray.getItem(j);
 
-    // Swap the values of the arrayItems
+    // Swap the values of the ArrayItems
     let temp = elemA.getValue();
     elemA.setValue(elemB.getValue());
     elemB.setValue(temp);
@@ -598,7 +644,51 @@ function _merge(arr, l, m, r) {
  * function that executes the sorting algorithm without animations.
  */
 function _heapSort() {
-    throw {name : "NotImplementedError", message : "too lazy to implement"};
+    _buildMaxHeap(sortingArray);
+    for (let i = sortingArray.length - 1; i > 0; i--) {
+        _swap(0, i);
+        _heapify(sortingArray, i, 0);
+    }
+}
+
+/**
+ * Restores the max heap property for an element of a max heap. This is a hidden
+ * function that executes without animations.
+ * @param  {Array}  arr  The CustomArray which represents the heap.
+ * @param  {Number} n    The size of the heap.
+ * @param  {Number} i    The index of the element of the array to heapify.
+ */
+function _heapify(arr, n, i) {
+    let lc = 2*i + 1;        // Left subchild
+    let rc = 2*i + 2;        // Right subchild
+    let largest = i;
+
+    // Find largest between root, lc, rc
+    if (lc < n && arr.getItem(lc).getValue() > arr.getItem(largest).getValue()) {
+        largest = lc;
+    }
+    if (rc < n && arr.getItem(rc).getValue() > arr.getItem(largest).getValue()) {
+        largest = rc;
+    }
+
+    // Restore heap property
+    if (largest != i) {
+        _swap(largest, i);
+        _heapify(arr, n, largest);
+    }
+
+}
+
+/**
+ * Builds a max heap from an array. This is a hidden function that
+ * executes without animations.
+ * @param  {Array}  arr  The CustomArray of ArrayItems which represents the heap.
+ */
+function _buildMaxHeap(arr) {
+    let n = arr.length;
+    for (let i = Math.floor(n/2); i >= 0; i--) {
+        _heapify(arr, n, i);
+    }
 }
 
 /**
