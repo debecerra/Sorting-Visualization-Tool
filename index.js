@@ -183,9 +183,9 @@ $("#sort-btn-group input").on("click", function() {
 });
 
 /**
-* Sets event handler for click on elem-num-input. The active array is reset to a
-* new array of the size given by the elem-num-input field.
-*/
+ * Sets event handler for click on elem-num-input. The active array is reset to a
+ * new array of the size given by the elem-num-input field.
+ */
 $("#elem-num-input").on("input", function() {
     // Get the value of the input tag
     num = $("#elem-num-input").val();
@@ -273,7 +273,7 @@ async function demo() {
  */
 async function swap(i, j) {
     // Input validation
-    if (!validIndex(i) || !validIndex(j) || i == j) {
+    if (!validIndex(i) || !validIndex(j)) {
         throw "Error: invalid input";
     }
 
@@ -341,10 +341,10 @@ async function bubbleSort() {
  */
 async function insertionSort() {
     n = sortingArray.length;
-    for (var i = 0; i < n; i++){
+    for (var i = 0; i < n; i++) {
         sortingArray.getItem(i).setState("done");
-        for (var j = i - 1; j >= 0; j--){
-            if (sortingArray.getItem(j).getValue() > sortingArray.getItem(j + 1).getValue()){
+        for (var j = i - 1; j >= 0; j--) {
+            if (sortingArray.getItem(j).getValue() > sortingArray.getItem(j + 1).getValue()) {
                 // Shift element at j to the right and shift element at i to the left
                 await swap(j, j + 1);
             }
@@ -363,7 +363,7 @@ async function mergeSort() {
     await mergeSortHelper(sortingArray, 0, sortingArray.length - 1);
 
     // Change the color of all array elements to "done"
-    for (var i = 0; i < sortingArray.length; i ++) {
+    for (var i = 0; i < sortingArray.length; i++) {
         sortingArray.getItem(i).setState("done");
     }
 
@@ -418,10 +418,10 @@ async function merge(arr, l, m, r) {
     let k = l;
     while (k <= r) {
         if (i < n1 && (j >= n2 || tempA[i] < tempB[j])) {
-            await set(k, tempA[i]);  // Set value
+            await set(k, tempA[i]); // Set value
             i++;
         } else {
-            await set(k, tempB[j]);  // Set Value
+            await set(k, tempB[j]); // Set Value
             j++;
         }
         k++;
@@ -439,9 +439,9 @@ async function heapSort() {
     for (let i = sortingArray.length - 1; i > 0; i--) {
         await swap(0, i);
         await heapify(sortingArray, i, 0);
-        sortingArray.getItem(i).setState("done");   // Set state to done
+        sortingArray.getItem(i).setState("done"); // Set state to done
     }
-    sortingArray.getItem(0).setState("done");  // Set state to done
+    sortingArray.getItem(0).setState("done"); // Set state to done
 
     // Reset state to default
     await sleep(END_DELAY);
@@ -455,8 +455,8 @@ async function heapSort() {
  * @param  {Number} i    The index of the element of the array to heapify.
  */
 async function heapify(arr, n, i) {
-    let lc = 2*i + 1;        // Left subchild
-    let rc = 2*i + 2;        // Right subchild
+    let lc = 2 * i + 1; // Left subchild
+    let rc = 2 * i + 2; // Right subchild
     let largest = i;
 
     // Find largest between root, lc, rc
@@ -481,15 +481,71 @@ async function heapify(arr, n, i) {
  */
 async function buildMaxHeap(arr) {
     let n = arr.length;
-    for (let i = Math.floor(n/2); i >= 0; i--) {
+    for (let i = Math.floor(n / 2); i >= 0; i--) {
         await heapify(arr, n, i);
     }
 }
+
 /**
  * Performs the Quick Sort algorithm on sortingArray.
  */
 async function quickSort() {
-    throw {name : "NotImplementedError", message : "too lazy to implement"};
+    await quickSortHelper(sortingArray, 0, sortingArray.length - 1);
+
+    // Reset state to default
+    await sleep(END_DELAY);
+    sortingArray.resetItemStates();
+}
+
+/**
+ * Performs the recursive calls of the Quick Sort algorithm on sortingArray.
+ * @param  {Array}  arr  The CustomArray to be sorted.
+ * @param  {Number} i    The starting index to sort from (inclusive).
+ * @param  {Number} j    The end index to sort to (inclusive).
+ */
+async function quickSortHelper(arr, i, j) {
+    if (i <= j) {
+        // Partition the subarray
+        p = await partition(arr, i, j);
+        sortingArray.getItem(p).setState("done");
+
+        // Recursive call on left side and right side of pivot
+        await quickSortHelper(arr, i, p - 1);
+        await quickSortHelper(arr, p + 1, j);
+    }
+}
+
+/**
+ * Partitions an subarray using the last element of as the pivot.
+ * @param  {Array}  arr  The CustomArray to be partitioned.
+ * @param  {Number} l    The starting index of the subarray (inclusive).
+ * @param  {Number} r    The end index of the subarray (inclusive).
+ */
+async function partition(arr, l, r) {
+    // Nothing to do if arr of length 0 or 1
+    if (l == r) {
+        return r;
+    }
+    
+    pivot = arr.getItem(r).getValue();
+    i = l;
+    j = r - 1;
+
+    // Iterate over arr with i and parition by swapping with j
+    while (i <= j) {
+        if (arr.getItem(i).getValue() > pivot) {
+            await swap(i, j);
+            j--;
+        } else {
+            i++;
+        }
+    }
+
+    // Swap the pivot into it's correct place
+    await swap(j + 1, r);
+
+    // Return the index of the pivot
+    return j + 1;
 }
 
 
@@ -510,7 +566,7 @@ function validIndex(index) {
  */
 function _swap(i, j) {
     // Input validation
-    if (!validIndex(i) || !validIndex(j) || i == j) {
+    if (!validIndex(i) || !validIndex(j)) {
         throw "Error: invalid input";
     }
 
@@ -563,9 +619,9 @@ function _bubbleSort() {
  */
 function _insertionSort() {
     n = sortingArray.length;
-    for (var i = 0; i < n; i++){
-        for (var j = i - 1; j >= 0; j--){
-            if (sortingArray.getItem(j).getValue() > sortingArray.getItem(j + 1).getValue()){
+    for (var i = 0; i < n; i++) {
+        for (var j = i - 1; j >= 0; j--) {
+            if (sortingArray.getItem(j).getValue() > sortingArray.getItem(j + 1).getValue()) {
                 // Shift element at j to the right and shift element at i to the left
                 _swap(j, j + 1);
             }
@@ -629,10 +685,10 @@ function _merge(arr, l, m, r) {
     let k = l;
     while (k <= r) {
         if (i < n1 && (j >= n2 || tempA[i] < tempB[j])) {
-            _set(k, tempA[i]);  // Set value
+            _set(k, tempA[i]); // Set value
             i++;
         } else {
-            _set(k, tempB[j]);  // Set Value
+            _set(k, tempB[j]); // Set Value
             j++;
         }
         k++;
@@ -659,8 +715,8 @@ function _heapSort() {
  * @param  {Number} i    The index of the element of the array to heapify.
  */
 function _heapify(arr, n, i) {
-    let lc = 2*i + 1;        // Left subchild
-    let rc = 2*i + 2;        // Right subchild
+    let lc = 2 * i + 1; // Left subchild
+    let rc = 2 * i + 2; // Right subchild
     let largest = i;
 
     // Find largest between root, lc, rc
@@ -686,7 +742,7 @@ function _heapify(arr, n, i) {
  */
 function _buildMaxHeap(arr) {
     let n = arr.length;
-    for (let i = Math.floor(n/2); i >= 0; i--) {
+    for (let i = Math.floor(n / 2); i >= 0; i--) {
         _heapify(arr, n, i);
     }
 }
@@ -696,7 +752,55 @@ function _buildMaxHeap(arr) {
  * function that executes the sorting algorithm without animations.
  */
 function _quickSort() {
-    throw {name : "NotImplementedError", message : "too lazy to implement"};
+    _quickSortHelper(sortingArray, 0, sortingArray.length - 1);
+}
+
+/**
+ * Performs the recursive calls of the Quick Sort algorithm on sortingArray.
+ * This is a hidden function that executes without animations.
+ * @param  {Array}  arr  The CustomArray to be sorted.
+ * @param  {Number} i    The starting index to sort from (inclusive).
+ * @param  {Number} j    The end index to sort to (inclusive).
+ */
+function _quickSortHelper(arr, i, j) {
+    if (i < j) {
+        p = _partition(arr, i, j);
+        _quickSortHelper(arr, i, p - 1);
+        _quickSortHelper(arr, p + 1, j);
+    }
+}
+
+/**
+ * Partitions an subarray using the last element of as the pivot.
+ * This is a hidden function that executes without animations.
+ * @param  {Array}  arr  The CustomArray to be partitioned.
+ * @param  {Number} l    The starting index of the subarray (inclusive).
+ * @param  {Number} r    The end index of the subarray (inclusive).
+ */
+function _partition(arr, l, r) {
+    // Nothing to do if arr of length 0 or 1
+    if (l >= r) {
+        return;
+    }
+    pivot = arr.getItem(r).getValue();
+    i = l;
+    j = r - 1;
+
+    // Iterate over arr with i and parition by swapping with j
+    while (i <= j) {
+        if (arr.getItem(i).getValue() > pivot) {
+            _swap(i, j);
+            j--;
+        } else {
+            i++;
+        }
+    }
+
+    // Swap the pivot into it's correct place
+    _swap(j + 1, r);
+
+    // Return the index of the pivot
+    return j + 1;
 }
 
 /**
