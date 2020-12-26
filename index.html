@@ -22,48 +22,48 @@
   <div class="btn-toolbar justify-content-center" role="toolbar" aria-label="Toolbar with button groups">
 
     <!-- Sort Buttons -->
-    <div class="btn-group mr-2 btn-group-toggle" id="sort-btn-group" role="group" data-toggle="buttons" aria-label="Sorting Algorithms">
+    <div class="btn-group mr-2 btn-group-toggle m-2" id="sort-btn-group" role="group" data-toggle="buttons" aria-label="Sorting Algorithms">
+
       <label class="btn btn-outline-light active">
         <input type="radio" name="sorting-options" id="bubblesort-btn" autocomplete="off" checked> Bubble Sort
       </label>
+
       <label class="btn btn-outline-light">
         <input type="radio" name="sorting-options" id="insertsort-btn" autocomplete="off"> Insertion Sort
       </label>
+
       <label class="btn btn-outline-light">
         <input type="radio" name="sorting-options" id="mergesort-btn" autocomplete="off"> Merge Sort
       </label>
+
       <label class="btn btn-outline-light">
         <input type="radio" name="sorting-options" id="heapsort-btn" autocomplete="off"> Heap Sort
       </label>
+
       <label class="btn btn-outline-light">
         <input type="radio" name="sorting-options" id="quicksort-btn" autocomplete="off"> Quick Sort
       </label>
 
-
-      <!-- <button id="bubblesort-btn" type="button" class="btn btn-info active">Bubble Sort</button>
-      <button id="insertsort-btn" type="button" class="btn btn-info">Insertion Sort</button>
-      <button id="mergesort-btn" type="button" class="btn btn-info">Merge Sort</button>
-      <button id="heapsort-btn" type="button" class="btn btn-info">Heap Sort</button>
-      <button id="quicksort-btn" type="button" class="btn btn-info">Quick Sort</button> -->
     </div>
 
-    <!-- Number of elements input field -->
-    <div class="input-group mr-2">
-      <div class="input-group-prepend">
-        <div class="input-group-text" id="btnGroupAddon">n = </div>
+      <!-- Number of elements input field -->
+      <div class="input-group mr-2 m-2">
+        <div class="input-group-prepend">
+          <div class="input-group-text" id="btnGroupAddon">n = </div>
+        </div>
+        <input id="elem-num-input" type="text" class="form-control" placeholder="Number of elements" aria-label="Input group example" aria-describedby="btnGroupAddon">
       </div>
-      <input id="elem-num-input" type="text" class="form-control" placeholder="Number of elements" aria-label="Input group example" aria-describedby="btnGroupAddon">
-    </div>
 
-    <!-- Sort button -->
-    <div class="btn-group mr-2" role="group" aria-label="Submit group">
-      <button id="sort-btn" type="button" class="btn btn-success">Sort!</button>
-    </div>
+      <!-- Sort button -->
+      <div class="btn-group mr-2 m-2" role="group" aria-label="Submit group">
+        <button id="sort-btn" type="button" class="btn btn-success">Sort!</button>
+        <button id="reset-btn" type="button" class="btn btn-warning">Reset</button>
+      </div>
 
-    <!-- Reset button -->
-    <div class="btn-group" role="group" aria-label="Reset group">
-      <button id="reset-btn" type="button" class="btn btn-warning">Reset</button>
-    </div>
+      <!-- Reset button -->
+      <!-- <div class="btn-group" role="group" aria-label="Reset group">
+        <button id="reset-btn" type="button" class="btn btn-warning">Reset</button>
+      </div> -->
 
   </div>
 
