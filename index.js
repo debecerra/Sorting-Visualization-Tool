@@ -38,7 +38,7 @@ class ArrayItem {
 
         this.value = value;
         this.state = "inactive";
-        this.maxHeight = 0.8 * $(".display-area").height();
+        this.maxHeight = $(".display-area").height();
         this.width = (this.maxValue <= 20 ? 40 : 15);
         this.height = this.maxHeight * (this.value / this.maxValue);
         this.elem = $("<div>")

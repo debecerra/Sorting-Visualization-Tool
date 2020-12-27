@@ -3,6 +3,7 @@
 
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- Material Icons -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -46,28 +47,29 @@
 
     </div>
 
-      <!-- Number of elements input field -->
-      <div class="input-group mr-2 m-2">
-        <div class="input-group-prepend">
-          <div class="input-group-text" id="btnGroupAddon">n = </div>
-        </div>
-        <input id="elem-num-input" type="text" class="form-control" placeholder="Number of elements" aria-label="Input group example" aria-describedby="btnGroupAddon">
+    <!-- Number of elements input field -->
+    <div class="input-group mr-2 m-2">
+      <div class="input-group-prepend">
+        <div class="input-group-text" id="btnGroupAddon">n = </div>
       </div>
+      <input id="elem-num-input" type="text" class="form-control" placeholder="Number of elements" aria-label="Input group example" aria-describedby="btnGroupAddon">
+    </div>
 
-      <!-- Sort button -->
-      <div class="btn-group mr-2 m-2" role="group" aria-label="Submit group">
-        <button id="sort-btn" type="button" class="btn btn-success">Sort!</button>
-        <button id="reset-btn" type="button" class="btn btn-warning">Reset</button>
-      </div>
+    <!-- Sort button -->
+    <div class="btn-group mr-2 m-2" role="group" aria-label="Submit group">
+      <button id="sort-btn" type="button" class="btn btn-success">Sort!</button>
+      <button id="reset-btn" type="button" class="btn btn-warning">Reset</button>
+    </div>
 
-      <!-- Reset button -->
-      <!-- <div class="btn-group" role="group" aria-label="Reset group">
+    <!-- Reset button -->
+    <!-- <div class="btn-group" role="group" aria-label="Reset group">
         <button id="reset-btn" type="button" class="btn btn-warning">Reset</button>
       </div> -->
 
   </div>
-
-  <div class="display-area"></div>
+  <div class="display-area-container">
+    <div class="display-area"></div>
+  </div>
 
 </body>
 
