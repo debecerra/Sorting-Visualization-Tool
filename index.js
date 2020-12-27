@@ -13,10 +13,18 @@ VALID_STATES.add("active");
 VALID_STATES.add("inactive");
 VALID_STATES.add("done");
 
+// The visual array for sorting
 let sortingArray = null;
+
+// The active sorting algorithm
 let sort = bubbleSort;
 
-/** Class representing an item in a CustomArray */
+/**
+ * Class representing an item in a CustomArray
+ *
+ * Each ArrayItem contains the value of the array element as well as the necessary
+ * properties for the UI.
+ */
 class ArrayItem {
     /**
      * Creates an ArrayItem.
@@ -40,8 +48,8 @@ class ArrayItem {
     }
 
     /**
-     * Takes the HTML element that corresponds to the ArrayItem and appends
-     * to the webpage.
+     * Takes the HTML element that corresponds to the ArrayItem and adds it
+     * to the webpage display.
      */
     initUI() {
         $(".display-area").append(this.elem);
@@ -193,6 +201,7 @@ $("#elem-num-input").on("input", function() {
     // Bound the array length to 5 <= num <= 100
     num = num < 5 ? 5 : num;
     num = num > 100 ? 100 : num;
+    console.log("Array length has been set to ", num);
 
     // Create a new active CustomArray with specified size
     refreshActiveArray(num);
@@ -203,9 +212,8 @@ $("#elem-num-input").on("input", function() {
  * the active sorting algorithm.
  */
 $("#sort-btn").on("click", function() {
-    console.log("The array is being sorted...");
+    console.log("Sort has been initiated");
     sort();
-    console.log("The array has been sorted.");
 });
 
 /**
@@ -247,19 +255,6 @@ function refreshActiveArray(size) {
  */
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-async function demo() {
-    console.log('Taking a break...');
-    await sleep(2000);
-    console.log('Two seconds later, showing sleep in a loop...');
-
-    // Sleep in loop
-    for (let i = 0; i < 5; i++) {
-        if (i === 3)
-            await sleep(2000);
-        console.log(i);
-    }
 }
 
 /********************
@@ -374,6 +369,9 @@ async function mergeSort() {
 
 /**
  * Performs the recursive calls of the Merge Sort algorithm on sortingArray.
+ * @param  {Array}  arr  The CustomArray to be sorted.
+ * @param  {Number} l    The start index of the subarray to sort (inclusive).
+ * @param  {Number} r    The end index of the subarray to sort (inclusive).
  */
 async function mergeSortHelper(arr, l, r) {
     // Base case is when arr is of length 1 (or 0)
@@ -396,6 +394,11 @@ async function mergeSortHelper(arr, l, r) {
 
 /**
  * Performs the merging subprocedure of the Merge Sort algorithm on sortingArray.
+ * Merges the array's given by arr[l:m] and arr[m+1:r]
+ * @param  {Array}  arr  The CustomArray to be sorted.
+ * @param  {Number} l    The start index of the first subarray to merge (inclusive).
+ * @param  {Number} m    The index of the midpoint.
+ * @param  {Number} r    The end index of the subarray to merge (inclusive).
  */
 async function merge(arr, l, m, r) {
     // Get sizes of two subarray's to be merged
@@ -467,7 +470,7 @@ async function heapify(arr, n, i) {
         largest = rc;
     }
 
-    // Restore heap property
+    // Restore heap property if largest is not root
     if (largest != i) {
         await swap(largest, i);
         await heapify(arr, n, largest);
@@ -500,8 +503,8 @@ async function quickSort() {
 /**
  * Performs the recursive calls of the Quick Sort algorithm on sortingArray.
  * @param  {Array}  arr  The CustomArray to be sorted.
- * @param  {Number} i    The starting index to sort from (inclusive).
- * @param  {Number} j    The end index to sort to (inclusive).
+ * @param  {Number} i    The start index of the subarray to sort (inclusive).
+ * @param  {Number} j    The end index of the subarray to sort (inclusive).
  */
 async function quickSortHelper(arr, i, j) {
     if (i <= j) {
@@ -516,17 +519,18 @@ async function quickSortHelper(arr, i, j) {
 }
 
 /**
- * Partitions an subarray using the last element of as the pivot.
+ * Partitions a subarray using the last element of as the pivot.
  * @param  {Array}  arr  The CustomArray to be partitioned.
- * @param  {Number} l    The starting index of the subarray (inclusive).
+ * @param  {Number} l    The start index of the subarray (inclusive).
  * @param  {Number} r    The end index of the subarray (inclusive).
+ * @return {Number}      The index of the pivot
  */
 async function partition(arr, l, r) {
     // Nothing to do if arr of length 0 or 1
     if (l == r) {
         return r;
     }
-    
+
     pivot = arr.getItem(r).getValue();
     i = l;
     j = r - 1;
@@ -547,7 +551,6 @@ async function partition(arr, l, r) {
     // Return the index of the pivot
     return j + 1;
 }
-
 
 /**
  * Validates an index to be used to access an element of the sorting array.
@@ -662,7 +665,12 @@ function _mergeSortHelper(arr, l, r) {
 
 /**
  * Performs the merging subprocedure of the Merge Sort algorithm on sortingArray.
+ * Merges the array's given by arr[l:m] and arr[m+1:r].
  * This is a hidden function that executes the sorting algorithm without animations.
+ * @param  {Array}  arr  The CustomArray to be sorted.
+ * @param  {Number} l    The start index of the first subarray to merge (inclusive).
+ * @param  {Number} m    The index of the midpoint.
+ * @param  {Number} r    The end index of the subarray to merge (inclusive).
  */
 function _merge(arr, l, m, r) {
     // Get sizes of two subarray's to be merged
@@ -727,7 +735,7 @@ function _heapify(arr, n, i) {
         largest = rc;
     }
 
-    // Restore heap property
+    // Restore heap property if largest is not root
     if (largest != i) {
         _swap(largest, i);
         _heapify(arr, n, largest);
@@ -759,8 +767,8 @@ function _quickSort() {
  * Performs the recursive calls of the Quick Sort algorithm on sortingArray.
  * This is a hidden function that executes without animations.
  * @param  {Array}  arr  The CustomArray to be sorted.
- * @param  {Number} i    The starting index to sort from (inclusive).
- * @param  {Number} j    The end index to sort to (inclusive).
+ * @param  {Number} i    The start index of the subarray to sort (inclusive).
+ * @param  {Number} j    The end index of the subarray to sort (inclusive).
  */
 function _quickSortHelper(arr, i, j) {
     if (i < j) {
@@ -774,8 +782,9 @@ function _quickSortHelper(arr, i, j) {
  * Partitions an subarray using the last element of as the pivot.
  * This is a hidden function that executes without animations.
  * @param  {Array}  arr  The CustomArray to be partitioned.
- * @param  {Number} l    The starting index of the subarray (inclusive).
+ * @param  {Number} l    The start index of the subarray (inclusive).
  * @param  {Number} r    The end index of the subarray (inclusive).
+ * @return {Number}      The index of the pivot
  */
 function _partition(arr, l, r) {
     // Nothing to do if arr of length 0 or 1
@@ -803,21 +812,9 @@ function _partition(arr, l, r) {
     return j + 1;
 }
 
-/**
- * TEMP functions
- */
-async function foo(i) {
-    if (i == 1) {
-        console.log("i =", i);
-    } else {
-        await foo(i - 1);
-        await sleep(1000);
-        console.log("i =", i);
-    }
-}
-
 /**************
  Run on startup
  **************/
 
+// Set the default array
 refreshActiveArray(DEFAULT_ARRAY_SIZE);
